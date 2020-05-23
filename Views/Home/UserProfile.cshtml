@@ -1,0 +1,74 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+@model User; 
+
+<ul class="nav nav-tabs mb-5">
+    <li class="nav-item">
+        <a class="nav-link" href="/home">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="/user_profile">User Profile</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+    </li>
+</ul>
+
+<div class="row">
+    <div class="col-sm-8">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h1>@Model.Name</h1>
+            </div>
+            <div class="card-body">
+                <pre>@Model.Description</pre>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <ul class="list-group mb-5">
+            <li class="list-group-item bg-dark text-white">
+                Your connections:
+            </li>
+            @{
+                List<User> usersConnections = (List<User>) ViewBag.MyConnections;
+            }
+            @if( usersConnections.Count == 0)
+            {
+                <li class="list-group-item">
+                    No connections...
+                </li> 
+            }
+            @foreach (User u in usersConnections)
+            {
+                <li class="list-group-item">
+                    <a href="/user/@u.UserId">@u.Name</a>
+                </li>    
+            }
+        </ul>
+        <ul class="list-group">
+            <li class="list-group-item bg-dark text-white">
+                Connection Requests:
+            </li>
+            @{
+                List<User> requests = (List<User>) ViewBag.ConnectionRequests;
+            }
+            @if(requests.Count == 0)
+            {
+                <li class="list-group-item">
+                    No requests...
+                </li> 
+            }
+            @foreach (User u in requests)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="/user/@u.UserId">@u.Name</a>
+                    <a class="btn btn-sm btn-outline-success" href="/connect/@u.UserId?prev=user_profile">Accept</a>
+                    <a class="btn btn-sm btn-outline-danger" href="/ignore/@u.UserId">Ignore</a>
+                </li>    
+            }
+        </ul>
+    </div>
+</div>

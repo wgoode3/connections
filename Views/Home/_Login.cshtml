@@ -1,0 +1,24 @@
+@model LoginUser;
+
+<div class="col-sm-6">
+    <div class="card">
+        <div class="card-header bg-info text-white">
+            Login
+        </div>
+        <div class="card-body">
+            <form action="/login" method="post">
+                <div class="form-group">
+                    <label>Email:</label>
+                    <input type="text" asp-for="LoginEmail" class="form-control" value="reimu@hakurei.shrine" />
+                    <span class="text-danger" asp-validation-for="LoginEmail"></span>
+                </div>
+                <div class="form-group">
+                    <label>Password:</label>
+                    <input type="password" asp-for="LoginPassword" class="form-control" value="Test1234" />
+                    <span class="text-danger" asp-validation-for="LoginPassword"></span>
+                </div>
+                <input type="submit" value="Login" class="btn btn-outline-info" />
+            </form>
+        </div>
+    </div>
+</div>

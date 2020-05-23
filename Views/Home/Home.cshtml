@@ -1,0 +1,44 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+@model List<User>; 
+
+<ul class="nav nav-tabs mb-5">
+    <li class="nav-item">
+        <a class="nav-link active" href="/home">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/user_profile">User Profile</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+    </li>
+</ul>
+
+<div class="card">
+    <div class="card-header bg-dark text-white">
+        Users you may want to connect to:
+    </div>
+    <div class="card-body">
+        <table class="table table-striped">
+            <tbody>
+                <tr>
+                    <th>Name:</th>
+                    <th>Action:</th>
+                </tr>
+                @foreach (User u in Model)
+                {
+                    <tr>
+                        <td>
+                            <a href="/user/@u.UserId">@u.Name</a>
+                        </td>
+                        <td>
+                            <a href="/connect/@u.UserId?prev=home">Connect</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

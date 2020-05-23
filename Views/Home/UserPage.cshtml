@@ -1,0 +1,26 @@
+@model User; 
+
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<ul class="nav nav-tabs mb-5">
+    <li class="nav-item">
+        <a class="nav-link" href="/home">Home</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link active" href="/user/@Model.UserId">User Profile</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+    </li>
+</ul>
+
+<div class="card">
+    <div class="card-header bg-info text-white">
+        <h1>@Model.Name</h1>
+    </div>
+    <div class="card-body">
+        <pre>@Model.Description</pre>
+    </div>
+</div>
