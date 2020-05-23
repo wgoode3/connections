@@ -2,3 +2,8 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+
+
+$(".input-validation-error").each(function(){
+    $(this).addClass("is-invalid");
+});
