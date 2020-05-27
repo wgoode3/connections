@@ -80,13 +80,13 @@ namespace connections.Controllers
         public IActionResult NewConnections ()
         {
             int? userId = HttpContext.Session.GetInt32 ("userId");
-            if(userId == null)
+            if (userId == null)
             {
-                return Redirect("/");
+                return Redirect ("/");
             }
             ViewBag.sessionId = (int) userId;
             List<User> all = _context.Users
-                .Include(u => u.Followers)
+                .Include (u => u.Followers)
                 .Where (u => u.UserId != userId)
                 .ToList ();
             List<User> usersFollowed = _context.Users
@@ -135,8 +135,9 @@ namespace connections.Controllers
         public IActionResult UserProfile (int userId)
         {
             int? sessionId = HttpContext.Session.GetInt32 ("userId");
-            if(sessionId == null) {
-                return Redirect("/");
+            if (sessionId == null)
+            {
+                return Redirect ("/");
             }
             ViewBag.sessionId = (int) sessionId;
             User user = _context.Users
@@ -158,8 +159,9 @@ namespace connections.Controllers
         public IActionResult UserEdit (int userId)
         {
             int? sessionId = HttpContext.Session.GetInt32 ("userId");
-            if(sessionId == null) {
-                return Redirect("/");
+            if (sessionId == null)
+            {
+                return Redirect ("/");
             }
             User user = _context.Users
                 .FirstOrDefault (u => u.UserId == userId);
