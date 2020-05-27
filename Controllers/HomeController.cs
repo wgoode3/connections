@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using connections.Models;
@@ -36,7 +36,7 @@ namespace connections.Controllers
                 newUser.Password = _registerHasher.HashPassword (newUser, newUser.Password);
                 _context.Create (newUser);
                 HttpContext.Session.SetInt32 ("userId", newUser.UserId);
-                return Redirect ("/home");
+                return Redirect ($"/user/{newUser.UserId}");
             }
             else
             {
@@ -64,7 +64,7 @@ namespace connections.Controllers
                     else
                     {
                         HttpContext.Session.SetInt32 ("userId", u.UserId);
-                        return Redirect ("/home");
+                        return Redirect ($"/user/{u.UserId}");
                     }
                 }
                 return View ("Index");
@@ -76,11 +76,17 @@ namespace connections.Controllers
             }
         }
 
-        [HttpGet ("home")]
-        public IActionResult Home ()
+        [HttpGet ("connections/new")]
+        public IActionResult NewConnections ()
         {
             int? userId = HttpContext.Session.GetInt32 ("userId");
+            if(userId == null)
+            {
+                return Redirect("/");
+            }
+            ViewBag.sessionId = (int) userId;
             List<User> all = _context.Users
+                .Include(u => u.Followers)
                 .Where (u => u.UserId != userId)
                 .ToList ();
             List<User> usersFollowed = _context.Users
@@ -101,10 +107,10 @@ namespace connections.Controllers
         }
 
         [HttpGet ("connect/{followId}")]
-        public IActionResult Connect (int followId, [FromQuery(Name = "prev")] string prev)
+        public IActionResult Connect (int followId, [FromQuery (Name = "prev")] string prev)
         {
             int? follower = HttpContext.Session.GetInt32 ("userId");
-            Console.WriteLine(prev);
+            Console.WriteLine (prev);
             if (follower == null)
             {
                 return Redirect ("/");
@@ -118,39 +124,96 @@ namespace connections.Controllers
         {
             int? userId = HttpContext.Session.GetInt32 ("userId");
             Connection request = _context.Connections
-                .Where(c => c.UserFollowedId == (int) userId)
-                .FirstOrDefault(c => c.FollowerId == followId);
-            _context.Connections.Remove(request);
-            _context.SaveChanges();
-            return Redirect ("/user_profile");
+                .Where (c => c.UserFollowedId == (int) userId)
+                .FirstOrDefault (c => c.FollowerId == followId);
+            _context.Connections.Remove (request);
+            _context.SaveChanges ();
+            return Redirect ($"/user/{userId}");
         }
 
-        [HttpGet ("user_profile")]
-        public IActionResult UserProfile ()
+        [HttpGet ("user/{userId}")]
+        public IActionResult UserProfile (int userId)
         {
-            int? userId = HttpContext.Session.GetInt32 ("userId");
+            int? sessionId = HttpContext.Session.GetInt32 ("userId");
+            if(sessionId == null) {
+                return Redirect("/");
+            }
+            ViewBag.sessionId = (int) sessionId;
             User user = _context.Users
                 .Include (u => u.Followers)
                 .ThenInclude (c => c.Follower)
                 .Include (u => u.UsersFollowed)
                 .ThenInclude (c => c.UserFollowed)
                 .FirstOrDefault (u => u.UserId == (int) userId);
-            List<User> myFollows = user.UsersFollowed.Select(c => c.UserFollowed).ToList();
-            List<User> myFollowers = user.Followers.Select(c => c.Follower).ToList();
-            List<User> myConnections = myFollows.Intersect(myFollowers).ToList();
-            List<User> connectionRequests = myFollowers.Except(myConnections).ToList();
+            List<User> myFollows = user.UsersFollowed.Select (c => c.UserFollowed).ToList ();
+            List<User> myFollowers = user.Followers.Select (c => c.Follower).ToList ();
+            List<User> myConnections = myFollows.Intersect (myFollowers).ToList ();
+            List<User> connectionRequests = myFollowers.Except (myConnections).ToList ();
             ViewBag.MyConnections = myConnections;
-            ViewBag.ConnectionRequests = connectionRequests; 
+            ViewBag.ConnectionRequests = connectionRequests;
             return View (user);
-
         }
-        
-        [HttpGet ("user/{userId}")]
-        public IActionResult UserPage (int userId)
+
+        [HttpGet ("user/{userId}/edit")]
+        public IActionResult UserEdit (int userId)
         {
+            int? sessionId = HttpContext.Session.GetInt32 ("userId");
+            if(sessionId == null) {
+                return Redirect("/");
+            }
             User user = _context.Users
                 .FirstOrDefault (u => u.UserId == userId);
-            return View(user);
+            UpdateUser update = new UpdateUser ()
+            {
+                UserId = user.UserId,
+                Name = user.Name,
+                Email = user.Email,
+                Location = user.Location,
+                Description = user.Description,
+                Image = user.Image
+            };
+            return View (update);
+        }
+
+        [HttpPost ("user/{userId}/update")]
+        public async Task<IActionResult> UserPost (int userId, UpdateUser u)
+        {
+            // get userid from session
+            int? sessionUserId = HttpContext.Session.GetInt32 ("userId");
+            if (sessionUserId == null)
+            {
+                Redirect ("/");
+            }
+            else
+            {
+                Console.WriteLine (ModelState.IsValid);
+                if (userId == (int) sessionUserId)
+                {
+                    User oldUser = _context.Users.FirstOrDefault (user => user.UserId == userId);
+                    oldUser.Name = u.Name;
+                    oldUser.Email = u.Email;
+                    oldUser.Location = u.Location;
+                    oldUser.Description = u.Description;
+                    if (u.Image != null)
+                    {
+                        using (var ms = new MemoryStream ())
+                        {
+                            await u.Image.CopyToAsync (ms);
+                            // 2 MB max file upload size 
+                            if (ms.Length < 2097152)
+                            {
+                                oldUser.Avatar = ms.ToArray ();
+                            }
+                            else
+                            {
+                                ModelState.AddModelError ("Image", "The file must be 2 MB or less!");
+                            }
+                        }
+                    }
+                    _context.SaveChanges ();
+                }
+            }
+            return Redirect ($"/user/{userId}");
         }
 
     }

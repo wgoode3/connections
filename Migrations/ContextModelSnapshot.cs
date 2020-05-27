@@ -40,13 +40,16 @@ namespace connections.Migrations
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<byte[]>("Avatar");
+
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("Description")
-                        .IsRequired();
+                    b.Property<string>("Description");
 
                     b.Property<string>("Email")
                         .IsRequired();
+
+                    b.Property<string>("Location");
 
                     b.Property<string>("Name")
                         .IsRequired();

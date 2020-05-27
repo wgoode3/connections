@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace connections.Models
 {
@@ -13,7 +14,12 @@ namespace connections.Models
         [Required (ErrorMessage = "Name is required!")]
         public string Name { get; set; }
 
-        [Required (ErrorMessage = "Description is required!")]
+        public string Location { get; set; }
+
+        [NotMapped]
+        public IFormFile Image { get; set; }
+        public byte[] Avatar { get; set; }
+
         public string Description { get; set; }
 
         [Required (ErrorMessage = "Email is required!")]

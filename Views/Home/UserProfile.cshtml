@@ -1,3 +1,17 @@
+<style>
+.avatar {
+    box-sizing: border-box;
+    height: 128px;
+    width: 128px;
+    border-radius: 50%;
+    position: relative;
+    top: 72px;
+}
+.description {
+    white-space: pre;
+}
+</style>
+
 @{
     ViewData["Title"] = "Home";
 }
@@ -5,32 +19,74 @@
 @model User; 
 
 <ul class="nav nav-tabs mb-5">
-    <li class="nav-item">
+    @* <li class="nav-item">
         <a class="nav-link" href="/home">Home</a>
+    </li> *@
+    @if(ViewBag.sessionId == Model.UserId)
+    {
+        <li class="nav-item">
+            <a class="nav-link active" href="/user/@ViewBag.sessionId">My Profile</a>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" href="/user/@ViewBag.sessionId">My Profile</a>
+        </li>
+    }
+    <li class="nav-item">
+        <a class="nav-link" href="/connections/new">New Connections</a>
     </li>
     <li class="nav-item">
-        <a class="nav-link active" href="/user_profile">User Profile</a>
+        <a class="nav-link" href="/user/@ViewBag.sessionId/edit">Edit Profile</a>
     </li>
     <li class="nav-item">
         <a class="nav-link" href="/logout">Logout</a>
     </li>
 </ul>
 
+
 <div class="row">
     <div class="col-sm-8">
         <div class="card">
-            <div class="card-header bg-info text-white">
-                <h1>@Model.Name</h1>
+            <div class="card-header bg-info">
+                @{
+                    if(Model.Avatar == null) {
+                        <img src="data:image/webp;base64,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" alt="user avatar" class="avatar img-thumbnail" />
+                    } else {
+                        var src = "data:image;base64," + Convert.ToBase64String(Model.Avatar);
+                        <img src="@src" alt="user avatar" class="avatar img-thumbnail" />
+                    }
+                }
             </div>
             <div class="card-body">
-                <pre>@Model.Description</pre>
+                <h1 class="mt-5">@Model.Name</h1>
+                @if(Model.Location != null)
+                {
+                    <h4>@Model.Location</h4>
+                }
+                @if(Model.Description != null)
+                {
+                    <p class="description my-3">@Model.Description</p>
+                }
+                @if(ViewBag.sessionId == Model.UserId)
+                {
+                    <a href="/user/@Model.UserId/edit">edit profile</a>
+                }
             </div>
         </div>
     </div>
     <div class="col-sm-4">
         <ul class="list-group mb-5">
             <li class="list-group-item bg-dark text-white">
-                Your connections:
+                @if(ViewBag.sessionId == Model.UserId)
+                {
+                    <p class="my-1">Your connections:</p>
+                }
+                else
+                {
+                    <p class="my-1">@Model.Name's connections:</p>
+                }
             </li>
             @{
                 List<User> usersConnections = (List<User>) ViewBag.MyConnections;
@@ -48,27 +104,30 @@
                 </li>    
             }
         </ul>
-        <ul class="list-group">
-            <li class="list-group-item bg-dark text-white">
-                Connection Requests:
-            </li>
-            @{
-                List<User> requests = (List<User>) ViewBag.ConnectionRequests;
-            }
-            @if(requests.Count == 0)
-            {
-                <li class="list-group-item">
-                    No requests...
-                </li> 
-            }
-            @foreach (User u in requests)
-            {
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <a href="/user/@u.UserId">@u.Name</a>
-                    <a class="btn btn-sm btn-outline-success" href="/connect/@u.UserId?prev=user_profile">Accept</a>
-                    <a class="btn btn-sm btn-outline-danger" href="/ignore/@u.UserId">Ignore</a>
-                </li>    
-            }
-        </ul>
+        @if(ViewBag.sessionId == Model.UserId)
+        {
+            <ul class="list-group">
+                <li class="list-group-item bg-dark text-white">
+                    <p class="my-1">Connection Requests:</p>
+                </li>
+                @{
+                    List<User> requests = (List<User>) ViewBag.ConnectionRequests;
+                }
+                @if(requests.Count == 0)
+                {
+                    <li class="list-group-item">
+                        No requests...
+                    </li> 
+                }
+                @foreach (User u in requests)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="/user/@u.UserId">@u.Name</a>
+                        <a class="btn btn-sm btn-outline-success" href="/connect/@u.UserId?prev=user/@Model.UserId">Accept</a>
+                        <a class="btn btn-sm btn-outline-danger" href="/ignore/@u.UserId">Ignore</a>
+                    </li>    
+                }
+            </ul>
+        }
     </div>
 </div>

@@ -9,7 +9,7 @@ using connections.Models;
 namespace connections.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20200523002851_initial")]
+    [Migration("20200526232155_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,13 +42,16 @@ namespace connections.Migrations
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<byte[]>("Avatar");
+
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("Description")
-                        .IsRequired();
+                    b.Property<string>("Description");
 
                     b.Property<string>("Email")
                         .IsRequired();
+
+                    b.Property<string>("Location");
 
                     b.Property<string>("Name")
                         .IsRequired();

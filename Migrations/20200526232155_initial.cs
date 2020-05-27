@@ -15,7 +15,9 @@ namespace connections.Migrations
                     UserId = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: false),
-                    Description = table.Column<string>(nullable: false),
+                    Location = table.Column<string>(nullable: true),
+                    Avatar = table.Column<byte[]>(nullable: true),
+                    Description = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: false),
                     Password = table.Column<string>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
