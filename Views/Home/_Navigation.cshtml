@@ -1,0 +1,52 @@
+@{
+    String p = Context.Request.Path;
+    String[] paths = p.Split("/");
+    int id = 0;
+    foreach (string path in paths)
+    {
+        var isNumeric = int.TryParse(path, out int n);
+        if(n != 0) 
+        {
+            id = n;
+        }
+    }
+}
+
+<ul class="nav nav-tabs mb-5">
+    <li class="nav-item">
+        @if(id == ViewBag.sessionId)
+        {
+            <a class="nav-link" data-path="^\/user\/\d+$" href="/user/@id">My Profile</a>
+        }
+        else if(id != 0)
+        {
+            <a class="nav-link" data-path="^\/user\/\d+$" href="/user/@id">User Profile</a>
+        }
+        else
+        {
+            <a class="nav-link" data-path="^\/user\/\d+$" href="/user/@ViewBag.sessionId">My Profile</a>
+        }
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-path="^\/connections\/new$" href="/connections/new">New Connections</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" data-path="^\/user\/\d+\/edit$" href="/user/@ViewBag.sessionId/edit">Edit Profile</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link" href="/logout">Logout</a>
+    </li>
+</ul>
+
+<script>
+    // set active link using data attribute and regex
+    // what was I thinking?
+    const pathname = window.location.pathname;
+    let links = document.querySelectorAll("[data-path]");
+    for(let link of links) {
+        let pattern = link.getAttribute("data-path");
+        if(new RegExp(pattern).test(pathname)) {
+            link.classList.add("active");
+        }
+    }
+</script>

@@ -13,6 +13,13 @@
 .description {
     white-space: pre;
 }
+.subtle-link {
+    color: #343a40;
+    text-decoration: none;
+}
+.subtle-link:hover {
+    color: #343a40;
+}
 </style>
 
 @{
@@ -21,20 +28,7 @@
 
 @model List<User>; 
 
-<ul class="nav nav-tabs mb-5">
-    <li class="nav-item">
-        <a class="nav-link" href="/user/@ViewBag.sessionId">My Profile</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link active" href="/connections/new">New Connections</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/user/@ViewBag.sessionId/edit">Edit Profile</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/logout">Logout</a>
-    </li>
-</ul>
+<partial name="_Navigation.cshtml" />
 
 <div class="card">
     <div class="card-header bg-dark text-white">
@@ -44,7 +38,7 @@
         <div class="row">
             @foreach (User u in Model)
             {
-                <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="col-xl-3 col-lg-4 col-md-6 my-5">
                     <div class="card">
                         <div class="card-header bg-info shrink">
                             @{
@@ -57,7 +51,7 @@
                             }
                         </div>
                         <div class="card-body">
-                            <h4 class="mt-5 mb-2">@u.Name</h4>
+                            <a class="subtle-link" href="/user/@u.UserId"><h5 class="mt-5 mb-2">@u.Name</h5></a>
                             <p>@u.Followers.Count Connection(s)</p>
                             <a class="btn btn-outline-info" href="/connect/@u.UserId?prev=connections/new">Get Connected</a>
                         </div>

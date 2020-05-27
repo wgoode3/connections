@@ -163,6 +163,7 @@ namespace connections.Controllers
             {
                 return Redirect ("/");
             }
+            ViewBag.sessionId = (int) sessionId;
             User user = _context.Users
                 .FirstOrDefault (u => u.UserId == userId);
             UpdateUser update = new UpdateUser ()
@@ -188,7 +189,10 @@ namespace connections.Controllers
             }
             else
             {
-                Console.WriteLine (ModelState.IsValid);
+                if(!ModelState.IsValid)
+                {
+                    return View("UserEdit", u);
+                }
                 if (userId == (int) sessionUserId)
                 {
                     User oldUser = _context.Users.FirstOrDefault (user => user.UserId == userId);
@@ -201,14 +205,15 @@ namespace connections.Controllers
                         using (var ms = new MemoryStream ())
                         {
                             await u.Image.CopyToAsync (ms);
-                            // 2 MB max file upload size 
-                            if (ms.Length < 2097152)
+                            // 1 MB max file upload size 
+                            if (ms.Length < 1048576)
                             {
                                 oldUser.Avatar = ms.ToArray ();
                             }
                             else
                             {
-                                ModelState.AddModelError ("Image", "The file must be 2 MB or less!");
+                                ModelState.AddModelError ("Image", "User Avatar must be 1 MB or less!");
+                                return View("UserEdit", u);
                             }
                         }
                     }

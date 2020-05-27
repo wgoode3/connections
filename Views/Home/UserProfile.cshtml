@@ -18,30 +18,7 @@
 
 @model User; 
 
-<ul class="nav nav-tabs mb-5">
-    @if(ViewBag.sessionId == Model.UserId)
-    {
-        <li class="nav-item">
-            <a class="nav-link active" href="/user/@ViewBag.sessionId">My Profile</a>
-        </li>
-    }
-    else
-    {
-        <li class="nav-item">
-            <a class="nav-link" href="/user/@ViewBag.sessionId">My Profile</a>
-        </li>
-    }
-    <li class="nav-item">
-        <a class="nav-link" href="/connections/new">New Connections</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/user/@ViewBag.sessionId/edit">Edit Profile</a>
-    </li>
-    <li class="nav-item">
-        <a class="nav-link" href="/logout">Logout</a>
-    </li>
-</ul>
-
+<partial name="_Navigation.cshtml" />
 
 <div class="row">
     <div class="col-sm-8">
@@ -75,14 +52,16 @@
     </div>
     <div class="col-sm-4">
         <ul class="list-group mb-5">
-            <li class="list-group-item bg-dark text-white">
+            <li class="list-group-item bg-dark text-white d-flex align-items-center">
+                
+                <span class="badge badge-pill badge-secondary">@ViewBag.MyConnections.Count</span>
                 @if(ViewBag.sessionId == Model.UserId)
                 {
-                    <p class="my-1">Your connections:</p>
+                    <span class="m-2">Your connections:</span>
                 }
                 else
                 {
-                    <p class="my-1">@Model.Name&apos;s connections:</p>
+                    <span class="m-2">@Model.Name&apos;s connections:</span>
                 }
             </li>
             @{
@@ -104,8 +83,9 @@
         @if(ViewBag.sessionId == Model.UserId)
         {
             <ul class="list-group">
-                <li class="list-group-item bg-dark text-white">
-                    <p class="my-1">Connection Requests:</p>
+                <li class="list-group-item bg-dark text-white d-flex align-items-center">
+                    <span class="badge badge-pill badge-secondary">@ViewBag.ConnectionRequests.Count</span>
+                    <span class="m-2">Connection Requests:</span>
                 </li>
                 @{
                     List<User> requests = (List<User>) ViewBag.ConnectionRequests;

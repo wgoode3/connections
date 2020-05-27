@@ -1,0 +1,44 @@
+@model UpdateUser; 
+
+<div class="card border border-info">
+    <div class="card-header bg-info text-white">
+        <h4 class="my-2">Edit Profile</h4>
+    </div>
+    <div class="card-body">
+        <form action="/user/@Model.UserId/update" method="post" enctype="multipart/form-data">
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label>Name:</label>
+                        <input type="text" asp-for="Name" class="form-control" />
+                        <span class="text-danger" asp-validation-for="Name"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="text" asp-for="Email" class="form-control" />
+                        <span class="text-danger" asp-validation-for="Email"></span>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="form-group">
+                        <label>Location:</label>
+                        <input type="text" asp-for="Location" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>User Avatar:</label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" asp-for="Image" />
+                            <label class="custom-file-label" for="customFile">Choose file</label>
+                        </div>
+                        <span class="text-danger" asp-validation-for="Image"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Description:</label>
+                <textarea asp-for="Description" class="form-control" ></textarea>
+            </div>
+            <input type="submit" value="Update Profile" class="btn btn-outline-info" />
+        </form>
+    </div>
+</div>
