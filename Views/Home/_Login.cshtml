@@ -1,25 +1,43 @@
 @model LoginUser;
 
+<!-- inline login form at the top of the page -->
+<nav class="navbar navbar-dark bg-dark fixed-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">Connections</a>
+        <form action="/login" method="post" class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-2" type="text" asp-for="LoginEmail" placeholder="Email" />
+            <input class="form-control mr-2" type="password" asp-for="LoginPassword" placeholder="Password" />
+            <input type="submit" value="Sign In" class="btn btn-info my-2 my-sm-0" />
+        </form>
+    </div>
+</nav>
 
-<div class="col-sm-6">
-    <div class="card">
-        <div class="card-header bg-info text-white">
-            <h3 class="my-2">Login</h3>
-        </div>
-        <div class="card-body">
-            <form action="/login" method="post">
-                <div class="form-group">
-                    <label>Email:</label>
-                    <input type="text" asp-for="LoginEmail" class="form-control" />
-                    <span class="text-danger" asp-validation-for="LoginEmail"></span>
-                </div>
-                <div class="form-group">
-                    <label>Password:</label>
-                    <input type="password" asp-for="LoginPassword" class="form-control" />
-                    <span class="text-danger" asp-validation-for="LoginPassword"></span>
-                </div>
-                <input type="submit" value="Login" class="btn btn-outline-info" />
-            </form>
+<!-- div to hold the login errors below the inline login form -->
+<div class="fixed-top less-top">
+    <div class="container">
+        <div class="offset-sm-6 col-sm-6">
+            <span class="alert bg-danger text-white" asp-validation-for="LoginEmail"></span>
+            <span class="alert bg-danger text-white" asp-validation-for="LoginPassword"></span>
         </div>
     </div>
 </div>
+
+<script>
+    // hide alerts until there are errors to display
+    // if there are errors to display then add a button to dismiss the alert
+    const alerts = document.getElementsByClassName("alert");
+    for(let el of alerts) {
+        if(el.innerText.length < 1) {
+            el.style.display = "none";
+        } else {
+            el.innerHTML += `<button class="close text-white">&times</button>"`;
+        }
+    }
+    // add event listeners to the `close` buttons to hide the alerts
+    const dismissals = document.getElementsByClassName("close");
+    for(let el of dismissals) {
+        el.addEventListener("click", function() {
+            el.parentNode.style.display = "none";
+        });
+    }
+</script>

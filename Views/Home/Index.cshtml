@@ -1,12 +1,44 @@
 ﻿@{
-    ViewData["Title"] = "Login or Register";
+    ViewData["Title"] = "Get Started";
 }
 
-<div class="jumbotron bg-dark text-white">
-    <h1>Connections</h1>
-</div>
+<style>
+    html, body {
+        height: 100%;
+        transition: 1000ms;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+    .container {
+        height: 100%;
+        display: flex;
+        justify-items: center;
+        align-items: center;
+    }
+</style>
 
-<div class="row">
-    <partial name="_Register.cshtml" />
-    <partial name="_Login.cshtml" />
-</div>
+<partial name="_Login.cshtml" />
+<partial name="_Register.cshtml" />
+
+<script>
+    const bgs = [
+        "/img/bg/castle.webp",
+        "/img/bg/city.webp",
+        "/img/bg/cliff.webp",
+        "/img/bg/field.webp",
+        "/img/bg/island.webp",
+        "/img/bg/lavender.webp",
+        "/img/bg/sea.webp",
+        "/img/bg/snow.webp"
+    ];
+    function getRandomItem(arr) {
+        let i = Math.floor(Math.random()*arr.length);
+        return arr[i]; 
+    }
+    document.querySelector("body").style.backgroundImage = `url(${getRandomItem(bgs)})`;
+    // switch background images every 10 seconds
+    setInterval( () => {
+        document.querySelector("body").style.backgroundImage = `url(${getRandomItem(bgs)})`;
+    }, 10000);
+</script>
