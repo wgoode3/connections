@@ -29,6 +29,17 @@ namespace connections.Controllers
             {
                 Redirect ("/");
             }
+            Dictionary<string, string> errors = new Dictionary<string, string>();
+            if(p.Title == null) {
+                errors["title"] = "Title is required!";
+            }
+            if(p.Content == null) {
+                errors["post"] = "Post is required!";
+            }
+            if(errors.Count > 0)
+            {
+                return Json (new { msg = "not ok", errors=errors});
+            }
             Post newPost = new Post ()
             {
                 Title = p.Title,
@@ -47,12 +58,12 @@ namespace connections.Controllers
                     }
                     else
                     {
-                        return Json (new { msg = "not ok 2", error = "Post Image must be 1 MB or less!" });
+                        errors["image"] = "Post Image must be 1 MB or less!";
+                        return Json (new { msg = "not ok", errors=errors});
                     }
                 }
             }
             _context.Create (newPost);
-            // return View("_Post", newPost);
             return Json (new { msg = "ok", post = newPost });
         }
 

@@ -1,3 +1,5 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.26.0/moment.min.js"></script>
+
 <style>
 .avatar {
     box-sizing: border-box;
@@ -37,7 +39,7 @@
                 <h1 class="mt-5">@Model.Name</h1>
                 @if(Model.Location != null)
                 {
-                    <h4>@Model.Location</h4>
+                    <h4><i class="fas fa-map-marker-alt"></i> @Model.Location</h4>
                 }
                 @if(Model.Description != null)
                 {
@@ -45,7 +47,7 @@
                 }
                 @if(ViewBag.sessionId == Model.UserId)
                 {
-                    <a href="/user/@Model.UserId/edit">edit profile</a>
+                    <a href="/user/@Model.UserId/edit"><i class="fas fa-edit"></i> edit profile</a>
                 }
             </div>
         </div>
@@ -124,22 +126,25 @@
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Title:</label>
-                                <input type="text" class="form-control" name="Title">
+                                <input type="text" class="form-control" name="Title" id="title" />
+                                <span class="text-danger" data-error="title"></span>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group">
                                 <label>Image:</label>
                                 <div class="custom-file">
-                                    <input type="file" class="custom-file-input" name="FormImage" />
+                                    <input type="file" class="custom-file-input" name="FormImage" id="image" />
                                     <label class="custom-file-label" for="customFile">Choose file</label>
+                                    <span class="text-danger" data-error="image"></span>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label>Post:</label>
-                        <textarea class="form-control" name="Content"></textarea>
+                        <textarea class="form-control" name="Content" id="post"></textarea>
+                        <span class="text-danger" data-error="post"></span>
                     </div>
                     <input type="submit" value="Publish Post" class="btn btn-outline-info" />
                 </form>
@@ -158,13 +163,24 @@
                     response
                         .json()
                         .then( data => {
-                            console.log(data);
-                            let out = `<div class="card mb-5"><div class="card-header bg-dark text-white"><h5 class="m-1">${data.post.title}</h5></div><div class="card-body">`;
-                            if(data.post.image) {
-                                out += `<img src="data:image;base64,${data.post.image}" alt="post image" class="img-thumbnail" />`;
+                            $(".form-control").removeClass("is-invalid");
+                            $(".text-danger").each(function() {
+                                this.innerText = "";
+                            })
+                            if(data.msg === "ok") {
+                                let out = `<div class="card mb-5"><div class="card-header bg-dark text-white"><h5 class="m-1">${data.post.title}</h5></div><div class="card-body">`;
+                                if(data.post.image) {
+                                    out += `<img src="data:image;base64,${data.post.image}" alt="post image" class="img-thumbnail" />`;
+                                }
+                                out += `<p class="description my-3">${data.post.content}</p></div></div>`;
+                                $("#posts").prepend(out);
+                            } else {
+                                console.log(data);
+                                for(let key in data.errors) {
+                                    $(`#${key}`).addClass("is-invalid");
+                                    $(`[data-error="${key}"]`)[0].innerText = data.errors[key];
+                                }
                             }
-                            out += `<p class="description my-3">${data.post.content}</p></div></div>`;
-                            $("#posts").prepend(out);
                         })
                         .catch(err => console.log(data))
                 } catch (error) {
@@ -180,8 +196,12 @@
                 foreach (Post p in posts) 
                 {
                     <div class="card mb-5">
-                        <div class="card-header bg-dark text-white">
+                        <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
                             <h5 class="m-1">@p.Title</h5>
+                            <span class="m-1">
+                                <i class="far fa-clock"></i> 
+                                <span class="rel-time ml-1">@p.CreatedAt.ToString("o")</span>
+                            </span>
                         </div>
                         <div class="card-body">
                             @if(p.Image != null) {
@@ -197,3 +217,8 @@
     </div>
 </div>
 
+<script>
+    $(".rel-time").each(function() {
+        this.innerText = moment(this.innerText).fromNow();
+    });
+</script>
