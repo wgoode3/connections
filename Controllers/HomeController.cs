@@ -141,6 +141,7 @@ namespace connections.Controllers
             }
             ViewBag.sessionId = (int) sessionId;
             User user = _context.Users
+                .Include (u => u.Posts)
                 .Include (u => u.Followers)
                 .ThenInclude (c => c.Follower)
                 .Include (u => u.UsersFollowed)
@@ -189,9 +190,9 @@ namespace connections.Controllers
             }
             else
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
-                    return View("UserEdit", u);
+                    return View ("UserEdit", u);
                 }
                 if (userId == (int) sessionUserId)
                 {
@@ -200,6 +201,7 @@ namespace connections.Controllers
                     oldUser.Email = u.Email;
                     oldUser.Location = u.Location;
                     oldUser.Description = u.Description;
+                    oldUser.UpdatedAt = DateTime.Now;
                     if (u.Image != null)
                     {
                         using (var ms = new MemoryStream ())
@@ -213,13 +215,37 @@ namespace connections.Controllers
                             else
                             {
                                 ModelState.AddModelError ("Image", "User Avatar must be 1 MB or less!");
-                                return View("UserEdit", u);
+                                return View ("UserEdit", u);
                             }
                         }
                     }
                     _context.SaveChanges ();
                 }
             }
+            return Redirect ($"/user/{userId}");
+        }
+
+        [HttpPost ("user/{userId}/delete")]
+        public IActionResult Delete (int userId)
+        {
+            int? sessionUserId = HttpContext.Session.GetInt32 ("userId");
+            if (sessionUserId == null)
+            {
+                Redirect ("/");
+            }
+            if (userId == (int) sessionUserId)
+            {
+                User toDelete = _context.Users.FirstOrDefault (u => u.UserId == userId);
+                _context.Users.Remove (toDelete);
+                _context.SaveChanges ();
+            }
+            return Redirect ("/");
+        }
+
+        [HttpPost ("user/{userId}/change_password")]
+        public IActionResult ChangePassword (int userId)
+        {
+            // TODO - add in this functionality
             return Redirect ($"/user/{userId}");
         }
 

@@ -45,5 +45,7 @@ namespace connections.Models
 
         [InverseProperty ("Follower")]
         public List<Connection> UsersFollowed { get; set; }
+
+        public List<Post> Posts { get; set; }
     }
 }

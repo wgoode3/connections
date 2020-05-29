@@ -35,6 +35,32 @@ namespace connections.Migrations
                     b.ToTable("Connections");
                 });
 
+            modelBuilder.Entity("connections.Models.Post", b =>
+                {
+                    b.Property<int>("PostId")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Content")
+                        .IsRequired();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<byte[]>("Image");
+
+                    b.Property<string>("Title")
+                        .IsRequired();
+
+                    b.Property<DateTime>("UpdatedAt");
+
+                    b.Property<int>("UserId");
+
+                    b.HasKey("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Posts");
+                });
+
             modelBuilder.Entity("connections.Models.User", b =>
                 {
                     b.Property<int>("UserId")
@@ -74,6 +100,14 @@ namespace connections.Migrations
                     b.HasOne("connections.Models.User", "UserFollowed")
                         .WithMany("Followers")
                         .HasForeignKey("UserFollowedId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("connections.Models.Post", b =>
+                {
+                    b.HasOne("connections.Models.User", "OriginalPoster")
+                        .WithMany("Posts")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

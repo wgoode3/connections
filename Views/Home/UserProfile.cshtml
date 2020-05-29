@@ -21,7 +21,7 @@
 <partial name="_Navigation.cshtml" />
 
 <div class="row">
-    <div class="col-sm-8">
+    <div class="col-lg-8 mb-5">
         <div class="card">
             <div class="card-header bg-info">
                 @{
@@ -50,18 +50,18 @@
             </div>
         </div>
     </div>
-    <div class="col-sm-4">
+    <div class="col-lg-4">
         <ul class="list-group mb-5">
             <li class="list-group-item bg-dark text-white d-flex align-items-center">
                 
                 <span class="badge badge-pill badge-secondary">@ViewBag.MyConnections.Count</span>
                 @if(ViewBag.sessionId == Model.UserId)
                 {
-                    <span class="m-2">Your connections:</span>
+                    <span class="m-1 ml-2">Your connections:</span>
                 }
                 else
                 {
-                    <span class="m-2">@Model.Name&apos;s connections:</span>
+                    <span class="m-1 ml-2">@Model.Name&apos;s connections:</span>
                 }
             </li>
             @{
@@ -82,10 +82,10 @@
         </ul>
         @if(ViewBag.sessionId == Model.UserId)
         {
-            <ul class="list-group">
+            <ul class="list-group mb-5">
                 <li class="list-group-item bg-dark text-white d-flex align-items-center">
                     <span class="badge badge-pill badge-secondary">@ViewBag.ConnectionRequests.Count</span>
-                    <span class="m-2">Connection Requests:</span>
+                    <span class="m-1 ml-2">Connection Requests:</span>
                 </li>
                 @{
                     List<User> requests = (List<User>) ViewBag.ConnectionRequests;
@@ -108,3 +108,92 @@
         }
     </div>
 </div>
+
+<div class="row">
+    <div class="col-lg-8">
+        @if(ViewBag.sessionId == Model.UserId)
+        {
+        <div class="card mb-5">
+            <div class="card-header bg-dark text-white">
+                <h5 class="m-1">New Post</h5>
+            </div>
+            <div class="card-body">
+                <form action="/user/@Model.UserId/post" method="post" enctype="multipart/form-data" onsubmit="AJAXSubmit(this);return false;" id="post-form">
+                    <input type="hidden" name="UserId" value="@Model.UserId" />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Title:</label>
+                                <input type="text" class="form-control" name="Title">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label>Image:</label>
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" name="FormImage" />
+                                    <label class="custom-file-label" for="customFile">Choose file</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Post:</label>
+                        <textarea class="form-control" name="Content"></textarea>
+                    </div>
+                    <input type="submit" value="Publish Post" class="btn btn-outline-info" />
+                </form>
+            </div>
+        </div>
+        <script>
+            async function AJAXSubmit (oFormElement) {
+                const formData = new FormData(oFormElement);
+                $("#post-form")[0].reset();
+                $(".custom-file-label").removeClass("selected").html("Choose file");
+                try {
+                    const response = await fetch(oFormElement.action, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    response
+                        .json()
+                        .then( data => {
+                            console.log(data);
+                            let out = `<div class="card mb-5"><div class="card-header bg-dark text-white"><h5 class="m-1">${data.post.title}</h5></div><div class="card-body">`;
+                            if(data.post.image) {
+                                out += `<img src="data:image;base64,${data.post.image}" alt="post image" class="img-thumbnail" />`;
+                            }
+                            out += `<p class="description my-3">${data.post.content}</p></div></div>`;
+                            $("#posts").prepend(out);
+                        })
+                        .catch(err => console.log(data))
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        </script>
+        }
+        <div id="posts">
+            @{
+                List<Post> posts = Model.Posts;
+                posts.Reverse();
+                foreach (Post p in posts) 
+                {
+                    <div class="card mb-5">
+                        <div class="card-header bg-dark text-white">
+                            <h5 class="m-1">@p.Title</h5>
+                        </div>
+                        <div class="card-body">
+                            @if(p.Image != null) {
+                                var src = "data:image;base64," + Convert.ToBase64String(p.Image);
+                                <img src="@src" alt="post image" class="img-thumbnail" />
+                            }
+                            <p class="description my-3">@p.Content</p>
+                        </div>
+                    </div>
+                }   
+            }
+        </div>
+    </div>
+</div>
+

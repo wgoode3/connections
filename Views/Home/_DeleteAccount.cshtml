@@ -24,7 +24,9 @@
             </div>
             <div class="modal-footer d-flex justify-content-between">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                <button type="button" class="btn btn-danger">Delete My Account</button>
+                <form action="/user/@ViewBag.sessionId/delete" method="post">
+                    <button type="submit" class="btn btn-danger">Delete My Account</button>
+                </form>
             </div>
         </div>
     </div>

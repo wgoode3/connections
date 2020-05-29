@@ -16,8 +16,25 @@
         justify-items: center;
         align-items: center;
     }
+    .main {
+        background-color: transparent;
+    }
+    .timer {
+        width: 100%;
+        height: 5px;
+        background: #17a2b8;
+        color: #17a2b8; 
+        top: 56px;
+    }
+    progress::-moz-progress-bar { 
+        background: #17a2b8; 
+    }
+    progress::-webkit-progress-value {
+        background: #17a2b8; 
+    }
 </style>
 
+<progress min="0" max="100" value="0" class="fixed-top timer"></progress>
 <partial name="_Login.cshtml" />
 <partial name="_Register.cshtml" />
 
@@ -32,13 +49,40 @@
         "/img/bg/sea.webp",
         "/img/bg/snow.webp"
     ];
-    function getRandomItem(arr) {
-        let i = Math.floor(Math.random()*arr.length);
-        return arr[i]; 
+    function shuffle(arr) {
+        for(let i=0; i<arr.length; i++) {
+            let rI = Math.floor(Math.random()*arr.length);
+            [arr[i], arr[rI]] = [arr[rI], arr[i]];
+        }
     }
-    document.querySelector("body").style.backgroundImage = `url(${getRandomItem(bgs)})`;
+    function slowFill(element, val, end, step) {
+        if(document.hidden) {
+            return;
+        }
+        if(val <= end) {
+            val += step;
+            element.value = val;
+            setTimeout(() => {
+                slowFill(element, val, end, step);
+            }, 20);
+        } else {
+            element.value = 0;
+        }
+    }
+    let ele = document.querySelector("progress")
+    // 100% and 50 updates a second for 10 seconds
+    let step = 100/500;
+    slowFill(ele, 0, 100, step);
+    let i = 0;
+    shuffle(bgs);
+    document.querySelector("body").style.backgroundImage = `url(${bgs[i++]})`;
     // switch background images every 10 seconds
     setInterval( () => {
-        document.querySelector("body").style.backgroundImage = `url(${getRandomItem(bgs)})`;
-    }, 7000);
+        if(i >= bgs.length) {
+            shuffle(bgs);
+            i = 0;
+        }
+        document.querySelector("body").style.backgroundImage = `url(${bgs[i++]})`;
+        slowFill(ele, 0, 100, step);
+    }, 10000);
 </script>

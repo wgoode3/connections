@@ -24,11 +24,11 @@
                     <li class="nav-item">
                         @if(id == ViewBag.sessionId)
                         {
-                            <a class="nav-link" data-path="^\/user\/\d+$" href="/user/@id">My Profile</a>
+                            <a class="nav-link" data-path="^\/user\/\d+$" href="/user/@ViewBag.sessionId">My Profile</a>
                         }
                         else if(id != 0)
                         {
-                            <a class="nav-link" data-path="^\/user\/\d+$" href="/user/@id">User Profile</a>
+                            <a class="nav-link" href="/user/@ViewBag.sessionId">My Profile</a>
                         }
                         else
                         {

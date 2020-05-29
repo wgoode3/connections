@@ -10,10 +10,17 @@ namespace connections.Models
         // this is the variable we will use to connect to the MySQL table, Lizards
         public DbSet<User> Users { get; set; }
         public DbSet<Connection> Connections { get; set; }
+        public DbSet<Post> Posts { get; set; }
 
         public void Create (User u)
         {
             Users.Add (u);
+            SaveChanges ();
+        }
+
+        public void Create (Post p)
+        {
+            Posts.Add (p);
             SaveChanges ();
         }
 
