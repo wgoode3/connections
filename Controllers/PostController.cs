@@ -29,10 +29,11 @@ namespace connections.Controllers
             {
                 Redirect ("/");
             }
-            Post newPost = new Post(){
-                Title=p.Title,
-                Content=p.Content,
-                UserId=p.UserId
+            Post newPost = new Post ()
+            {
+                Title = p.Title,
+                Content = p.Content,
+                UserId = p.UserId
             };
             if (p.FormImage != null)
             {
@@ -46,13 +47,13 @@ namespace connections.Controllers
                     }
                     else
                     {
-                        return Json (new { msg = "not ok 2", error="Post Image must be 1 MB or less!" });
+                        return Json (new { msg = "not ok 2", error = "Post Image must be 1 MB or less!" });
                     }
                 }
             }
-            _context.Create(newPost);
+            _context.Create (newPost);
             // return View("_Post", newPost);
-            return Json (new { msg = "ok", post = newPost});
+            return Json (new { msg = "ok", post = newPost });
         }
 
     }

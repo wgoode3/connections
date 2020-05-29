@@ -34,7 +34,6 @@ namespace connections.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        // We us the NotMapped Annotation so that this variable doesn't end up in our database.
         [NotMapped]
         [Compare ("Password", ErrorMessage = "Confirm Password must match Password!")]
         [DataType (DataType.Password)]

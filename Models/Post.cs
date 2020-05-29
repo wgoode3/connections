@@ -10,12 +10,15 @@ namespace connections.Models
     {
         [Key]
         public int PostId { get; set; }
-        [Required (ErrorMessage="Your Post must have a Title!")]
+
+        [Required (ErrorMessage = "Your Post must have a Title!")]
         public string Title { get; set; }
+
         [NotMapped]
         public IFormFile FormImage { get; set; }
         public byte[] Image { get; set; }
-        [Required (ErrorMessage="Your Post must have Content!")]
+
+        [Required (ErrorMessage = "Your Post must have Content!")]
         public string Content { get; set; }
         public int UserId { get; set; }
         public User OriginalPoster { get; set; }

@@ -43,7 +43,7 @@ namespace connections.Controllers
             return View (update);
         }
 
-         [HttpPost ("user/{userId}/update")]
+        [HttpPost ("user/{userId}/update")]
         public async Task<IActionResult> UserPost (int userId, UpdateUser u)
         {
             // get userid from session

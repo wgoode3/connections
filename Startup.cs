@@ -35,7 +35,7 @@ namespace connections
         {
             app.UseDeveloperExceptionPage ();
             app.UseStaticFiles ();
-            app.UseSession();
+            app.UseSession ();
             app.UseMvc ();
         }
     }
