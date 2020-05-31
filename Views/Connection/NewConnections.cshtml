@@ -19,7 +19,7 @@
                         <div class="card-header bg-info shrink">
                             @{
                                 if(u.Avatar == null) {
-                                    <img src="~/img/default.webp" alt="user avatar" class="avatar img-thumbnail" />
+                                    <img src="~/img/default.jpg" alt="user avatar" class="avatar img-thumbnail" />
                                 } else {
                                     var src = "data:image;base64," + Convert.ToBase64String(u.Avatar);
                                     <img src="@src" alt="user avatar" class="avatar img-thumbnail" />
