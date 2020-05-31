@@ -3,7 +3,7 @@
 <!-- inline login form at the top of the page -->
 <nav class="navbar navbar-dark bg-dark fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="">Connections</a>
+        <a class="navbar-brand" href="/">Connections</a>
         <form action="/login" method="post" class="form-inline my-2 my-lg-0">
             <input class="form-control mr-2" type="text" asp-for="LoginEmail" placeholder="Email" />
             <input class="form-control mr-2" type="password" asp-for="LoginPassword" placeholder="Password" />
@@ -30,7 +30,7 @@
         if(el.innerText.length < 1) {
             el.style.display = "none";
         } else {
-            el.innerHTML += `<button class="close text-white">&times</button>"`;
+            el.innerHTML += `<button class="close text-white">&times</button>`;
         }
     }
     // add event listeners to the `close` buttons to hide the alerts

@@ -57,3 +57,13 @@ body {
 .wider {
     width: 100%;
 }
+
+/* fixes the login page for mobile */
+@media only screen and (max-width: 600px) {
+    .container {
+        display: block !important;
+    }
+    #register {
+        margin-top: 200px;
+    }
+}

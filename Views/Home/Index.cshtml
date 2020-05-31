@@ -5,10 +5,6 @@
 <style>
     html, body {
         height: 100%;
-        transition: 2000ms;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
     }
     .container {
         height: 100%;
@@ -19,70 +15,103 @@
     .main {
         background-color: transparent;
     }
-    .timer {
+    #timer {
         width: 100%;
         height: 5px;
-        background: #17a2b8;
-        color: #17a2b8; 
         top: 56px;
+        background-color: #6c757d;
     }
-    progress::-moz-progress-bar { 
-        background: #17a2b8; 
+    .slide {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
     }
-    progress::-webkit-progress-value {
-        background: #17a2b8; 
+    .fadeOut {
+        opacity: 0;
+        transition: 2000ms;
     }
 </style>
 
-<progress min="0" max="100" value="0" class="fixed-top timer"></progress>
+<!-- has to be written this way to avoid whitespace in the dom -->
+<div id="slideshow"><div class="slide"></div><div class="slide"></div></div>
+<div class="fixed-top" id="timer"></div>
 <partial name="_Login.cshtml" />
 <partial name="_Register.cshtml" />
 
+<!-- Smooth background fading slideshow -->
 <script>
-    const bgs = [
-        "/img/bg/castle.webp",
-        "/img/bg/city.webp",
-        "/img/bg/cliff.webp",
-        "/img/bg/field.webp",
-        "/img/bg/island.webp",
-        "/img/bg/lavender.webp",
-        "/img/bg/sea.webp",
-        "/img/bg/snow.webp"
-    ];
-    function shuffle(arr) {
-        for(let i=0; i<arr.length; i++) {
-            let rI = Math.floor(Math.random()*arr.length);
-            [arr[i], arr[rI]] = [arr[rI], arr[i]];
+   // reverse the child elements in a parent element
+    const slideshow = document.getElementById("slideshow");
+    function reverseNodes() {
+        // make the previous pane transparent
+        slideshow.childNodes[1].classList.add("fadeOut");
+        setTimeout( () => {
+            for(let i=slideshow.childNodes.length-1; i>=0; i--) {
+                let node = slideshow.removeChild(slideshow.childNodes[i]);
+                node.classList.remove("fadeOut");
+                slideshow.appendChild(node);
+            }
+        }, 2000) 
+    }
+
+    // function to set a random image from an array of images
+    // feels convenient to write this as a closure
+    function getImg(arr, element) {
+        var i = 0;
+        function shuffle(arr) {
+            for(let i=0; i<arr.length; i++) {
+                let rI = Math.floor(Math.random()*arr.length);
+                [arr[i], arr[rI]] = [arr[rI], arr[i]];
+            }
+        }
+        shuffle(arr);
+        return function() {
+            if(i >= arr.length) {
+                shuffle(arr);
+                i = 0;
+            }
+            document.querySelector(".slide").style.backgroundImage = `url(${arr[i++]})`;
         }
     }
-    function slowFill(element, val, end, step) {
-        if(document.hidden) {
-            return;
+    const nextBg = getImg([
+        "/img/bg/castle.jpg",
+        "/img/bg/city.jpg",
+        "/img/bg/cliff.jpg",
+        "/img/bg/field.jpg",
+        "/img/bg/island.jpg",
+        "/img/bg/lavender.jpg",
+        "/img/bg/sea.jpg",
+        "/img/bg/snow.jpg"
+    ], document.querySelector("body"));
+    nextBg();
+    reverseNodes();
+
+    // function create a timer with animated bar
+    const time = 10000; // time in ms until the next image should load
+    let start = null;
+    function fill(timestamp) {
+        function applyGradient(p, element) {
+            element.style.background = `linear-gradient(90deg, #17a2b8 ${p}%, #6c757d ${p}%)`;
         }
-        if(val <= end) {
-            val += step;
-            element.value = val;
-            setTimeout(() => {
-                slowFill(element, val, end, step);
-            }, 20);
+        if (!start) {
+            start = timestamp;
+        }
+        let progress = timestamp - start;
+        applyGradient((progress/time)*100, document.getElementById("timer"))
+        if (progress < time) {
+            window.requestAnimationFrame(fill);
         } else {
-            element.value = 0;
+            start = null;
+            applyGradient(0, document.getElementById("timer"))
+            nextBg();
+            window.requestAnimationFrame(fill);
+            reverseNodes();
         }
     }
-    let ele = document.querySelector("progress")
-    // 100% and 50 updates a second for 10 seconds
-    let step = 100/500;
-    slowFill(ele, 0, 100, step);
-    let i = 0;
-    shuffle(bgs);
-    document.querySelector("body").style.backgroundImage = `url(${bgs[i++]})`;
-    // switch background images every 10 seconds
-    setInterval( () => {
-        if(i >= bgs.length) {
-            shuffle(bgs);
-            i = 0;
-        }
-        document.querySelector("body").style.backgroundImage = `url(${bgs[i++]})`;
-        slowFill(ele, 0, 100, step);
-    }, 10000);
+    window.requestAnimationFrame(fill);
 </script>
